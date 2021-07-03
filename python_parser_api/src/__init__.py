@@ -10,3 +10,5 @@ api = Api(app)
 file_error_handler = FileHandler('logs/errorlog.txt')
 file_error_handler.setLevel(WARNING)
 app.logger.addHandler(file_error_handler)
+
+from src import routes
