@@ -1,2 +1,2 @@
-# genshin-parser
-test editing
+# Genshin Impact Telegram wiki bot
+##...
