@@ -1,5 +1,8 @@
 from flask import make_response
 from flask_restful import Resource
+from bs4 import BeautifulSoup
+import requests
+import json
 
 name_to_link_ru = {
     "albedo":"https://genshin-impact.fandom.com/ru/wiki/%D0%90%D0%BB%D1%8C%D0%B1%D0%B5%D0%B4%D0%BE",
@@ -44,4 +47,9 @@ class Сharacter(Resource):
         if name not in name_to_link_ru.keys():
             return make_response({"status":"no character "+name},404)
         link = name_to_link_ru[name]
-        return make_response({"status":link},200)
+        data = requests.get(link)
+        soup = BeautifulSoup(data.text, features='html.parser')
+        e_dict = {}
+        e_dict["name"] = soup.find("h1", class_="page-header__title").text
+        f_json = json.dumps(e_dict, ensure_ascii=False, indent=4)
+        return make_response(f_json,200)

@@ -7,8 +7,8 @@ app = Flask(__name__)
 api = Api(app)
 
 #logging customization
-file_error_handler = FileHandler('logs/errorlog.txt')
-file_error_handler.setLevel(WARNING)
-app.logger.addHandler(file_error_handler)
+# file_error_handler = FileHandler('logs/errorlog.txt')
+# file_error_handler.setLevel(WARNING)
+# app.logger.addHandler(file_error_handler)
 
 from src import routes
