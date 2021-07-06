@@ -50,6 +50,12 @@ class Сharacter(Resource):
         data = requests.get(link)
         soup = BeautifulSoup(data.text, features='html.parser')
         e_dict = {}
+
         e_dict["name"] = soup.find("h1", class_="page-header__title").text
+        e_dict["quotes"] = soup.find("div", class_="mw-parser-output").dl.dd.text
+        d_s = soup.find("div", class_="tabbertab").find_all("p")
+        e_dict["description"] = d_s[1].text + d_s[2].text + d_s[3].text
+        e_dict["description"] = e_dict["description"].replace('\n', ' ')
+        
         f_json = json.dumps(e_dict, ensure_ascii=False, indent=4)
         return make_response(f_json,200)
