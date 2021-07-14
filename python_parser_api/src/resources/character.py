@@ -3,6 +3,7 @@ from flask_restful import Resource
 from bs4 import BeautifulSoup
 import requests
 import json
+import re
 
 name_to_link_ru = {
     "albedo":"https://genshin-impact.fandom.com/ru/wiki/%D0%90%D0%BB%D1%8C%D0%B1%D0%B5%D0%B4%D0%BE",
@@ -55,7 +56,34 @@ class Сharacter(Resource):
         e_dict["quotes"] = soup.find("div", class_="mw-parser-output").dl.dd.text
         d_s = soup.find("div", class_="tabbertab").find_all("p")
         e_dict["description"] = d_s[1].text + d_s[2].text + d_s[3].text
-        e_dict["description"] = e_dict["description"].replace('\n', ' ')
+
+        main_block = soup.find("div", class_="mw-parser-output")
+        key = "wrong"
+        for i in main_block:
+            if i.name == "h3" or i.name == "h2":
+                if i.span.get("id") == "Личность":
+                    key = "personality"
+                elif i.span.get("id") == "Внешность":
+                    key = "appearance"
+                elif i.span.get("id") == "Боевые_характеристики":
+                    key = "combat_characteristics"
+                elif i.span.get("id") == "История":
+                    key = "history"
+                else:
+                    key = "wrong"
+                    continue
+                e_dict[key]=""
+            else:
+                if key == "wrong":
+                    continue
+                if i.name == "dl":
+                    e_dict[key] += i.dd.i.text+" "
+                elif i.name == "p":
+                    e_dict[key] += i.text+" "
+
+        for i in e_dict.keys():
+            e_dict[i] = e_dict[i].replace('\n', ' ')
+            e_dict[i] = re.sub('([A-Z.])', r'\1 ', e_dict[i])
         
         f_json = json.dumps(e_dict, ensure_ascii=False, indent=4)
         return make_response(f_json,200)
