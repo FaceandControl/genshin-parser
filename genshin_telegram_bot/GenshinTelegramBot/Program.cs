@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace genshin_telegram_bot
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
